@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <SDL.h>
 #include <GL/gl.h>
+#include "stb_image.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
@@ -14,10 +15,48 @@
 #include "Theme.h"
 #include "RuntimePaths.h"
 
+extern unsigned char g_embedded_logo_png[];
+extern unsigned int g_embedded_logo_png_len;
+
 // Simple append-mode logger for the injector.
 static void log(const std::string& msg) {
     FILE* f = fopen(RuntimePaths::injectorLogPath().c_str(), "a");
     if (f) { fprintf(f, "%s\n", msg.c_str()); fclose(f); }
+}
+
+static void setWindowIconFromEmbeddedLogo(SDL_Window* window) {
+    if (!window || g_embedded_logo_png_len == 0) return;
+
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+    unsigned char* rgba = stbi_load_from_memory(
+        g_embedded_logo_png,
+        static_cast<int>(g_embedded_logo_png_len),
+        &width,
+        &height,
+        &channels,
+        4
+    );
+    if (!rgba || width <= 0 || height <= 0) {
+        if (rgba) stbi_image_free(rgba);
+        log("Window icon: failed to decode embedded logo");
+        return;
+    }
+
+    SDL_Surface* iconSurface = SDL_CreateRGBSurfaceWithFormatFrom(
+        rgba, width, height, 32, width * 4, SDL_PIXELFORMAT_RGBA32
+    );
+    if (!iconSurface) {
+        log("Window icon: failed to create SDL surface");
+        stbi_image_free(rgba);
+        return;
+    }
+
+    SDL_SetWindowIcon(window, iconSurface);
+    SDL_FreeSurface(iconSurface);
+    stbi_image_free(rgba);
+    log("Window icon: applied embedded logo");
 }
 
 // Window sizing as display percentages for resolution-independent scaling.
@@ -41,7 +80,7 @@ static std::string getSelfDir() {
 
 // Runs the injector GUI event loop and owns the SDL2/OpenGL/ImGui lifetime.
 int main(int /*argc*/, char* /*argv*/[]) {
-    log("=== mc_injector startup ===");
+    log("=== XtsyInjector startup ===");
 
     // ── Wayland-first: set SDL video driver hint before SDL_Init ──
     // Minecraft itself runs under XWayland, but the injector GUI should be Wayland-native.
@@ -114,6 +153,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
         SDL_Quit();
         return 1;
     }
+    setWindowIconFromEmbeddedLogo(window);
     log("SDL window created: " + std::to_string(windowW) + "x" + std::to_string(windowHLocked));
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -244,6 +284,6 @@ int main(int /*argc*/, char* /*argv*/[]) {
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    log("=== mc_injector shutdown ===");
+    log("=== XtsyInjector shutdown ===");
     return 0;
 }

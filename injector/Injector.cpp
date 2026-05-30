@@ -53,7 +53,7 @@ static std::string ptracePermissionHint(const std::string& syscallError) {
     if (scope > 0 && !hasSysPtraceCapability()) {
         message += ". Linux Yama ptrace_scope=" + std::to_string(scope) +
                    " blocks attaching to unrelated processes. Run once: "
-                   "sudo setcap cap_sys_ptrace+ep ./build/mc_injector, or temporarily: "
+                   "sudo setcap cap_sys_ptrace+ep ./build/XtsyInjector, or temporarily: "
                    "echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope.";
     }
     return message;

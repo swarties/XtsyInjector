@@ -689,11 +689,6 @@ void App::renderInlineSettingsPanel() {
     ImGui::BeginChild("##InlineSettingsForm", ImVec2(innerW, formH), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
     renderJarPathEditor("Xtsy Profile Jar", "##XtsyJarPath", "...##pickxtsy",
                         m_xtsyJarPathBuf.data(), m_xtsyJarPathBuf.size(), m_hasZenity);
-    ImGui::TextUnformatted("Lion Payload");
-    ImGui::TextColored(ImVec4(0.70f, 0.70f, 0.70f, 1.0f), "Auto-download from GitHub on inject");
-    if (!m_hasCurl) {
-        ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.45f, 1.0f), "curl not found: Lion profile unavailable");
-    }
     if (!m_hasZenity) {
         ImGui::TextColored(ImVec4(1.0f, 0.76f, 0.35f, 1.0f), "zenity not found: file picker buttons disabled");
     }

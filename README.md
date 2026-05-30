@@ -32,7 +32,7 @@ cmake --build cmake-build -j4
 Binary output:
 
 ```text
-build/mc_injector
+build/XtsyInjector
 ```
 
 ## Run
@@ -40,7 +40,7 @@ build/mc_injector
 Start Minecraft first, then run:
 
 ```bash
-./build/mc_injector
+./build/XtsyInjector
 ```
 
 ## Payload Profiles
@@ -90,7 +90,7 @@ sudo sysctl --system
 Alternative to changing `ptrace_scope`:
 
 ```bash
-sudo setcap cap_sys_ptrace+ep ./build/mc_injector
+sudo setcap cap_sys_ptrace+ep ./build/XtsyInjector
 ```
 
 ## LionClient Note

@@ -141,5 +141,6 @@ target_link_libraries(mc_injector PRIVATE
 target_compile_options(mc_injector PRIVATE -Wall -Wextra)
 
 set_target_properties(mc_injector PROPERTIES
+    OUTPUT_NAME "XtsyInjector"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build"
 )
