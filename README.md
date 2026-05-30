@@ -17,6 +17,7 @@ automatically when needed.
 - `pkg-config`
 - SDL2 development headers
 - OpenGL development headers
+- X11 development headers
 - `libcap` development headers
 - `xxd`
 
